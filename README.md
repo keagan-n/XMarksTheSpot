@@ -1,5 +1,5 @@
 # XMarksTheSpot
-LAHacks web applications built using Google Maps API
+LAHacks 2021 web application built using Google Maps API and Autocomplete API
 
 *works best using Chromium-based web browser such as Google Chrome*
 
