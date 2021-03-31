@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+ <html>
+   <head>
+      <title>X Marks The Spot</title>
+
+      <!--Style sheets-->
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+      <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"/> 
+
+      <!--Google Fonts-->
+      <link rel="preconnect" href="https://fonts.gstatic.com">
+      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    </head>
+
+   <body>
+
+      <header>
+        <h3 class="logo">XMarksTheSpot</h2>
+        <ul class="nav_links">
+          <li><a href="{{url_for('index')}}">Home</a></li>
+          <li><a href="{{url_for('about')}}">About Us</a></li>
+        </ul>
+      </header>
+
+
+      <button id="modalBtn" class="button">Add Location</button>
+
+      <div id="locationModal" class="modal">
+        <div class="modal-content">
+          <span class="closeBtn">&times;</span>
+          <form action="/addEntry" method="POST" enctype="multipart/form-data">
+            <input type="file" id="myFile" name="file">
+            <input id= "placename" name="placename" placeholder="Enter the name of the place" type="text"/>
+            <input id= "search_bar" name="location" placeholder="Enter the location" type="text" class="controls"/>
+            <input id= "loc_descrip" name="description" placeholder="Location description"type ="text"/>
+            <input type="submit"> 
+          </form>
+        </div>
+    </div>
+
+
+
+      
+
+      <!--Search Bar-->
+<!-- 
+      <div class="wrap">
+        <div class="search">
+           <input id="search_bar" placeholder="Enter a location" type="text" class="controls"/>
+        </div>
+     </div> -->
+
+     
+      <div class="map_wrapper">
+
+        <!--The div element for the map -->
+        <div id="map"></div>
+
+          <!--Location Description-->
+        <!-- <div class="descrip_modal descrip_modal--hidden">
+          <div class="descrip_contents">
+          <h4>Location Name: Signal Hill</h4>
+          <p> Description blebgrekbgierignjrekbgrejgbrejbgejkrgbrehjbgehrjkbg</p>
+          <p> Description blebgrekbgierignjrekbgrejgbrejbgejkrgbrehjbgehrjkbg</p>
+          <p> Description blebgrekbgierignjrekbgrejgbrejbgejkrgbrehjbgehrjkbg</p>
+          <img src= "https://www.cityofsignalhill.org/ImageRepository/Document?documentID=5444" width = 300px height= 300px>
+  
+        </div>
+      </div> -->
+
+      </div>
+     
+
+
+      
+      <script src="{{ url_for('static', filename='app.js') }}"></script>
+
+      <script >
+
+        // this is a list of json objects, where each object has the same fields as what u see in database.py,
+        // like latitude, longitude, description, image location, etc. maybe define a function app.js and call
+        // it with data
+
+          let marker;
+
+          // function addMarker(location, ){
+
+          //     marker = new google.maps.Marker({
+          //         position: location,
+          //         map: map
+          //     });
+              
+
+          // }
+
+          var infowindow;
+
+          var map;
+
+
+          function addMarker(coordinates, info){
+              var marker = new google.maps.Marker({
+                position: coordinates,
+                map: map,
+              });
+
+              // var infowindow = new google.maps.InfoWindow({
+              //   content: info
+              // });
+              marker.addListener('click', function() {
+                infowindow.setContent(info);
+                infowindow.open(map, marker);
+                });
+
+            }
+
+
+
+          function stringBuilder(marker) {
+              var st = "<div class=\"informWindow\"><p>" + "Place Name: " + marker.placename + "</p>" + "<p>" + "Description: " + marker.description + "</p>" +
+              "<img src=" + marker.imagelocation + " alt=" + marker.placename + " width=\"300\" + height=\"250\">" +"</div>";
+              return st;
+          }
+
+
+          function populateMap(data) {
+
+              for (let i = 0; i < data.length; i++) {
+                  var marker = data[i];
+                  var coordinates = {lat: marker.latitude, lng: marker.longitude};
+                  var info = stringBuilder(marker);
+
+                  addMarker(coordinates, info);
+
+              }
+
+          }
+
+
+
+          function initMap(){
+
+              // Map Center
+              var options = {
+                zoom:12,
+                center:{lat:33.7743,lng:-117.9380}
+              }
+
+              map = new google.maps.Map(document.getElementById('map'),options);
+
+              // Search Autocomplete
+
+              const autocomplete = new google.maps.places.Autocomplete(document.getElementById('search_bar'));
+              autocomplete.addListener('place_changed', onPlaceChanged);
+
+
+              // idk if we need this -> optional argument in autocomplete object 
+
+              // const aOptions = {
+              //     bounds: defaultBounds,
+              //     componentRestrictions: { country: "us" },
+              //     fields: ["place_id", "geometry", "name"],
+              //     types: ["geocode"],
+              //   };
+
+              // add Marker = "{lat:___,lng:___}"
+
+
+              // Info Window
+              // const detail = new google.maps.InfoWindow({
+              //     content: '<h2>Yooooohoo</h2>'
+              // });
+
+              // marker.addListener("mouseover", () =>{
+              //     detail.open(map, marker);
+              // })
+
+              infowindow = new google.maps.InfoWindow();
+
+              var data= {{ entries |tojson }};
+              data = JSON.parse(data);
+              populateMap(data);
+
+
+
+
+          }
+
+
+      </script>
+
+
+      <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+      <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNtsZQuoluir3fEw-mwXZpn-1pLQLPNUc&callback=initMap&libraries=&v=weekly"
+        async></script>
+
+        <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDSfCU3uVlbkm5WDRXPEXwTjm9PUF2cgIw&libraries=places&callback=initMap"
+        async>
+      </script> 
+
+       
+
+      <!-- <script src="app.js"></script> -->
+
+      <!-- <script type="text/javascript" src="{{ url_for('static', filename='app.js') }}"></script> -->
+    </body>
+
+</html>

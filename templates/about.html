@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  
+    <head> 
+        <title>About Us</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+        <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"/> 
+    </head>
+    <body>
+        <header>
+            <h3 class="logo">XMarksTheSpot</h2>
+            <ul class="nav_links">
+                <li><a href="{{url_for('index')}}">Home</a></li>
+                <li><a href="{{url_for('about')}}">About Us</a></li>
+            </ul>
+        </header>
+        <div class= "text-wrapper">
+            <h3 class ="headings">Meet the Team</h3>
+                <p>
+                    The team comprises of Long, Soobin, Keagan, and Garrett. Everyone is
+                    a young and determined developer coming from various colleges across the country. 
+                    We all came together, not only with the passion to learn, but to see what problems we
+                    could fix. 
+                </p>
+            <h3 class = "headings">Our Mission</h3>
+                <p>
+                    We, as we have all see, covid has locked everyone indoors, leaving everyone,
+                    with little to no options to get outside. This is where our project, XMarksTheSpot comes in.
+                     Using XMarksTheSpot, find numerous places that previously were only known to small groups of people.
+                    These cool and beautiful spots are specifically selected to be a place you can venture out to
+                    and do whatever it is you want, whether that is to take photos or just look around! So get out there
+                    and add cool spots that you can find!
+                </p>
+        </div>
+    </body>
+</html>
